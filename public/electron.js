@@ -49,99 +49,28 @@ app.on("activate", () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+ipcMain.on("getData", (event, args) => {
+  getData((a) => {
+    mainWindow.webContents.send("setData", {
+      output: JSON.stringify(a),
+    });
+  });
+});
 
-// ------------------- set up event listeners here --------------------
-
-// temporary variable to store data while background
-// process is ready to start processing
-let cache = {
-  data: undefined,
+const getData = (cb) => {
+  const connectionString =
+    "server=DB-SRS2-TEST;Database=qbere;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
+  const query = "SELECT name FROM deprod.ct_country";
+  const sql = require("msnodesqlv8");
+  sql.open(connectionString, (err, con) => {
+    if (err) {
+      console.error(err);
+    } else {
+      con.query(query, (err, rows) => {
+        if (rows) {
+          cb(rows.map((r) => r.name));
+        }
+      });
+    }
+  });
 };
-
-// a window object outside the function scope prevents
-// the object from being garbage collected
-let hiddenWindow;
-
-// This event listener will listen for request
-// from visible renderer process
-
-// ipcMain.on("data:send", (e, newInput) => {
-//   const newOutput = newInput * newInput;
-//   win.webContents.send("data:get", newOutput);
-// });
-
-ipcMain.on("python:pythonInput1", (event, args) => {
-  const backgroundFileUrl = url.format({
-    pathname: path.join(__dirname, `../background_tasks/python1.html`),
-    protocol: "file:",
-    slashes: true,
-  });
-  hiddenWindow = new BrowserWindow({
-    show: false,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-  hiddenWindow.loadURL(backgroundFileUrl);
-
-  hiddenWindow.webContents.openDevTools();
-
-  hiddenWindow.on("closed", () => {
-    hiddenWindow = null;
-  });
-  // cache.data = [args.input1, args.input2, args.input3];
-  cache.data = args.input;
-});
-
-ipcMain.on("python:pythonInput2", (event, args) => {
-  const backgroundFileUrl = url.format({
-    pathname: path.join(__dirname, `../background_tasks/python2.html`),
-    protocol: "file:",
-    slashes: true,
-  });
-  hiddenWindow = new BrowserWindow({
-    show: false,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-  hiddenWindow.loadURL(backgroundFileUrl);
-
-  hiddenWindow.webContents.openDevTools();
-
-  hiddenWindow.on("closed", () => {
-    hiddenWindow = null;
-  });
-  cache.data = args.input;
-});
-
-// This event listener will listen for data being sent back
-// from the background renderer process
-ipcMain.on("MESSAGE_FROM_PYTHON1", (event, args) => {
-  mainWindow.webContents.send("python:pythonOutput1", {
-    output: args.message,
-  });
-});
-
-ipcMain.on("MESSAGE_FROM_PYTHON2", (event, args) => {
-  mainWindow.webContents.send("python:pythonOutput2", {
-    output: args.message,
-  });
-});
-
-ipcMain.on("PYTHON1_READY", (event, args) => {
-  event.reply("START_PROCESSING_PYTHON1", {
-    data: cache.data,
-    // data1: cache.data[0],
-    // data2: cache.data[1],
-    // data3: cache.data[2],
-  });
-});
-
-ipcMain.on("PYTHON2_READY", (event, args) => {
-  event.reply("START_PROCESSING_PYTHON2", {
-    data: cache.data,
-  });
-});

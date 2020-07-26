@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { SqlClient } from "msnodesqlv8";
-
-const connectionString =
-  "server=DB-SRS2-TEST;Database=qbere;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
-const query = "SELECT name FROM deprod.ct_country";
+import React, { useState } from "react";
+declare global {
+  interface Window {
+    ipcRenderer: any;
+  }
+}
 export const App = () => {
   const [list, setList] = useState<string[]>([]);
-  useEffect(() => {
-    const sql: SqlClient = require("msnodesqlv8");
-    sql.open(connectionString, (err, con) => {
-      if (err) {
-        console.error(err);
-      } else {
-        con.query(query, (err, rows) => {
-          if (rows) {
-            console.log(rows);
-            setList(rows.map((r) => r.name));
-          }
-        });
-      }
+  const getData = () => {
+    window.ipcRenderer.send("getData", {
+      input: "test",
     });
+  };
+  window.ipcRenderer.on("setData", (e: any, args: any) => {
+    console.log(args.output);
+    setList(JSON.parse(args.output));
   });
   return (
     <>
       <h1>Solvency II</h1>
+      <button onClick={getData}>Get data</button>
       {list.map((l) => (
-        <p key={l}>l</p>
+        <p key={l}>{l}</p>
       ))}
     </>
   );
