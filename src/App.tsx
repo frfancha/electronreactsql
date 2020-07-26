@@ -11,9 +11,9 @@ export const App = () => {
       input: "test",
     });
   };
-  window.ipcRenderer.on("setData", (e: any, args: any) => {
-    console.log(args.output);
-    setList(JSON.parse(args.output));
+  window.ipcRenderer.on("setData", (e: any, rows: any) => {
+    console.log(rows);
+    setList(rows);
   });
   return (
     <>

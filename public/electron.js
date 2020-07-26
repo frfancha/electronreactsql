@@ -50,10 +50,8 @@ app.on("activate", () => {
 });
 
 ipcMain.on("getData", (event, args) => {
-  getData((a) => {
-    mainWindow.webContents.send("setData", {
-      output: JSON.stringify(a),
-    });
+  getData((rows) => {
+    mainWindow.webContents.send("setData", rows);
   });
 });
 
