@@ -12,16 +12,16 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.51",
+    "@types/node": "^12.12.53",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
     "cross-env": "^7.0.2",
     "electron-is-dev": "^1.2.0",
-    "msnodesqlv8": "^2.0.0",
+    "msnodesqlv8": "^2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "react-start": "react-scripts start",
@@ -49,8 +49,8 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "electron": "^9.1.1",
-    "electron-builder": "^22.7.0",
+    "electron": "^9.1.2",
+    "electron-builder": "^22.8.0",
     "electron-rebuild": "^1.11.0",
     "wait-on": "^5.1.0"
   }

@@ -27,6 +27,8 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 }
 
+app.allowRendererProcessReuse = false;
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -57,8 +59,8 @@ ipcMain.on("getData", (event, args) => {
 
 const getData = (cb) => {
   const connectionString =
-    "server=DB-SRS2-TEST;Database=qbere;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
-  const query = "SELECT name FROM deprod.ct_country";
+    "server=DB-SRS2-TEST;Database=master;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
+  const query = "SELECT name FROM sys.databases";
   const sql = require("msnodesqlv8");
   sql.open(connectionString, (err, con) => {
     if (err) {
